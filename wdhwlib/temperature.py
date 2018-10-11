@@ -35,7 +35,7 @@ _logger = logging.getLogger(__name__)
 _CPUINFO_FILENAME = "/proc/cpuinfo"
 _CPUINFO_REGEX_CORES = re.compile(r"^cpu\s+cores.*:\s*([0-9]+)\s*$")
 
-_CORETEMP_FILENAME_BASE = "/sys/class/hwmon/hwmon0/temp{0:d}_{1}"
+_CORETEMP_FILENAME_BASE = "/sys/class/hwmon/hwmon{2}/temp{0:d}_{1}"
 _CORETEMP_CORE_OFFSET = 2
 _CORETEMP_TYPE_JUNCTION_VALUE = "input"
 _CORETEMP_TYPE_JUNCTION_REGULAR_MAX = "max"
@@ -64,11 +64,12 @@ class TemperatureReader(object):
     """Temperature measurement reader.
     """
     
-    def __init__(self):
+    def __init__(self, hwmon=0):
         """Initializes a new instance of the temperature reader."""
         super().__init__()
         self.__lock = threading.RLock()
         self.__running = False
+        self.hwmon = hwmon
     
     def connect(self):
         """Connect the temperature reader.
@@ -103,7 +104,7 @@ class TemperatureReader(object):
             int: This method returns the raw value contained in the file.
         """
         file_name = _CORETEMP_FILENAME_BASE.format(_CORETEMP_CORE_OFFSET + cpu_index,
-                                                   value_type)
+                                                   value_type, self.hwmon)
         try:
             with open(file_name, 'rt', encoding='utf-8', errors='replace') as f:
                 raw_value = f.readline()
