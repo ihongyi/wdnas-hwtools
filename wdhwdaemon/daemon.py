@@ -158,6 +158,7 @@ class ConfigFile(object):
         pmc_test_mode (bool): Enable PMC protocol testing mode?
         disk_drives (List(str)): List of disk drives in the drive bays (in the order of
             PMC drive bay flags).
+        hwmon (int): Index of the coretemp driver
         memory_dimms_count (int): Number of memory DIMMs to monitor.
         socket_path (str): Path of the UNIX domain socket for controlling the hardware
             controller daemon.
@@ -212,6 +213,7 @@ class ConfigFile(object):
         self.declareOption(SECTION, "pmc_port", default=wdpmcprotocol.PMC_UART_PORT_DEFAULT)
         self.declareOption(SECTION, "pmc_test_mode", default=False, parser=self.parseBoolean)
         self.declareOption(SECTION, "disk_drives", default=temperature.HDSMART_DISKS, parser=self.parseArray)
+        self.declareOption(SECTION, "hwmon", default=0, parser=self.parseInteger)
         self.declareOption(SECTION, "memory_dimms_count", default=2, parser=self.parseInteger)
         self.declareOption(SECTION, "socket_path", default=wdhwdaemon.WDHWD_SOCKET_FILE_DEFAULT)
         self.declareOption(SECTION, "socket_max_clients", default=10, parser=self.parseInteger)
@@ -831,7 +833,7 @@ class WdHwDaemon(object):
             
             _logger.debug("%s: Starting temperature reader",
                           type(self).__name__)
-            temperature_reader = TemperatureReader()
+            temperature_reader = TemperatureReader(cfg.hwmon)
             self.__temperature_reader = temperature_reader
             temperature_reader.connect()
             
