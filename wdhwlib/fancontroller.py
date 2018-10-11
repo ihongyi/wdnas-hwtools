@@ -615,6 +615,7 @@ class FanController(FanControllerCallback):
                         level = monitor.level
                         if level is not None:
                             if global_level < level:
+                                _logger.debug("%s got temp %s lvl %s", monitor._log_name, monitor.temperature, level)                                 
                                 global_level = level
                     
                     fan_speed_change = False
