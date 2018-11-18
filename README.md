@@ -16,10 +16,9 @@ inaccuracies in this manual._
 
 ### Prerequisites
 
-The packages _python3_, _python3-serial_, and _python3-smbus_ need to be installed
-in order to use the tools:
+The following packages need to be installed in order to use the tools:
 
-    sudo apt install python3 python3-serial python3-smbus
+    sudo apt install pkg-config python3 python3-serial python3-smbus
 
 Moreover, _hddtemp_ is necessary in order to monitor the hard disk temperature:
 
