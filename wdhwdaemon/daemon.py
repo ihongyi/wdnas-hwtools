@@ -29,6 +29,7 @@ import logging.handlers
 import os
 import os.path
 import pwd
+import shlex
 import signal
 import stat
 import subprocess
@@ -194,7 +195,7 @@ class ConfigFile(object):
         """
         super().__init__()
         self.__file = config_file
-        self.__cfg = configparser.RawConfigParser()
+        self.__cfg = configparser.ConfigParser()
         try:
             self.__file = self.__cfg.read(config_file)
             if len(self.__file) <= 0:
@@ -229,7 +230,7 @@ class ConfigFile(object):
         self.declareOption(SECTION, "power_supply_changed_args", default=["{socket}", "{state}"], parser=self.parseArray)
         self.declareOption(SECTION, "temperature_changed_command", default=None)
         self.declareOption(SECTION, "temperature_changed_args", default=["{new_level}", "{old_level}"], parser=self.parseArray)
-        self.declareOption(SECTION, "lcd_button_pressed_commands", default=[], parser=self.parseArray)
+        self.declareOption(SECTION, "lcd_button_pressed_command", default=None)
         self.declareOption(SECTION, "usb_button_pressed_command", default=None)
 
     def declareOption(self, option_section, option_name, attribute_name=None, default=None, parser=str, parser_args=None):
@@ -448,7 +449,7 @@ class WdHwDaemon(object):
         """Notify hardware controller daemon start completed.
         """
         if self.__cfg.system_up_command is not None:
-            cmd = [self.__cfg.system_up_command]
+            cmd = shlex.split(self.__cfg.system_up_command)
             #for arg in self.__cfg.system_up_args:
             #    cmd.append(arg.format())
             result = subprocess.call(cmd)
@@ -457,7 +458,7 @@ class WdHwDaemon(object):
         """Notify hardware controller daemon stopping.
         """
         if self.__cfg.system_down_command is not None:
-            cmd = [self.__cfg.system_down_command]
+            cmd = shlex.split(self.__cfg.system_down_command)
             #for arg in self.__cfg.system_down_args:
             #    cmd.append(arg.format())
             result = subprocess.call(cmd)
@@ -472,7 +473,7 @@ class WdHwDaemon(object):
         if (old_level is None) and (new_level < FanController.LEVEL_HOT):
             return
         if self.__cfg.temperature_changed_command is not None:
-            cmd = [self.__cfg.temperature_changed_command]
+            cmd = shlex.split(self.__cfg.temperature_changed_command)
             for arg in self.__cfg.temperature_changed_args:
                 cmd.append(arg.format(new_level=str(new_level),
                                       old_level=str(old_level)))
@@ -492,7 +493,7 @@ class WdHwDaemon(object):
                      type(self).__name__,
                      bay_number, drive_name, "present" if present else "absent")
         if self.__cfg.drive_presence_changed_command is not None:
-            cmd = [self.__cfg.drive_presence_changed_command]
+            cmd = shlex.split(self.__cfg.drive_presence_changed_command)
             for arg in self.__cfg.drive_presence_changed_args:
                 cmd.append(arg.format(drive_bay=str(bay_number),
                                       drive_name=drive_name,
@@ -510,7 +511,7 @@ class WdHwDaemon(object):
                      type(self).__name__,
                      socket_number, "powered up" if powered_up else "powered down")
         if self.__cfg.power_supply_changed_command is not None:
-            cmd = [self.__cfg.power_supply_changed_command]
+            cmd = shlex.split(self.__cfg.power_supply_changed_command)
             for arg in self.__cfg.power_supply_changed_args:
                 cmd.append(arg.format(socket=str(socket_number),
                                       state="1" if powered_up else "0"))
@@ -518,15 +519,14 @@ class WdHwDaemon(object):
 
     def notifyButtonLCDPressed(self):
         """Notify press of LCD button up or down."""
-        commands = self.__cfg.lcd_button_pressed_commands
-        if commands:
-            cmd = commands[self.__lcd_button_index % len(commands)]
-            result = subprocess.call(cmd)
+        command = self.__cfg.lcd_button_pressed_command
+        if command:
+            result = subprocess.call(shlex.split("{cmd} {i}".format(cmd=command, i=self.__lcd_button_index)))
 
     def notifyButtonUSBPressed(self):
         """Notify press of USB button."""
         if self.__cfg.usb_button_pressed_command:
-            result = subprocess.call(self.__cfg.usb_button_pressed_command)
+            result = subprocess.call(shlex.split(self.__cfg.usb_button_pressed_command))
 
     def receivedPMCInterrupt(self, isr):
         """Notify reception of a pending PMC interrupt.
