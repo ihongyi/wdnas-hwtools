@@ -40,7 +40,7 @@ case \$1 in
 		python -m wdhwdaemon.daemon &
 		;;
 	stop)
-		python -m wdhwdaemon.client stop
+		python -m wdhwdaemon.client shutdown
 		;;
 	*)
 		echo "Usage: wdhwd.sh {start|stop}"
