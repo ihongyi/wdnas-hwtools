@@ -24,7 +24,7 @@ import logging
 import os
 from os.path import isdir,isfile,join
 import re
-import smbus
+import smbus2 as smbus
 import subprocess
 
 
@@ -34,7 +34,7 @@ _logger = logging.getLogger(__name__)
 _CPUINFO_FILENAME = "/proc/cpuinfo"
 _CPUINFO_REGEX_CORES = re.compile(r"^cpu\s+cores.*:\s*([0-9]+)\s*$")
 
-_CORETEMP_FILENAME_BASE = "/sys/class/hwmon/hwmon0/temp{0:d}_{1}"
+_CORETEMP_FILENAME_BASE = "/sys/bus/platform/devices/coretemp.0/temp{0:d}_{1}"
 _CORETEMP_CORE_OFFSET = 2
 _CORETEMP_TYPE_JUNCTION_VALUE = "input"
 _CORETEMP_TYPE_JUNCTION_REGULAR_MAX = "max"

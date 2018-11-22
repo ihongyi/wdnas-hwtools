@@ -183,7 +183,7 @@ class ConfigFile(object):
         """
         super(ConfigFile, self).__init__()
         self.__file = config_file
-        self.__cfg = ConfigParser.RawConfigParser()
+        self.__cfg = ConfigParser.SafeConfigParser()
         try:
             self.__file = self.__cfg.read(config_file)
             if len(self.__file) <= 0:
@@ -587,7 +587,7 @@ class WdHwDaemon(object):
         supplementary_gids = []
         for group in grp.getgrall():
             if username in group.gr_mem:
-                supplementary_gids.append(g.gr_gid)
+                supplementary_gids.append(group.gr_gid)
         return supplementary_gids
     
     def _resolveFileAccessGroups(self, filenames):
