@@ -24,6 +24,7 @@ chmod -R u=rwX,go=rX ${INSTALLDIR}
 chmod -R u=rwx,go=rx ${INSTALLDIR}/scripts/*
 
 # create wdhw client
+mkdir -p /usr/local/sbin
 cat <<EOF > ${WDHWC}
 #!/bin/bash
 cd ${INSTALLDIR}
