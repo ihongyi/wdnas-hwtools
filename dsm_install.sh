@@ -28,7 +28,7 @@ mkdir -p /usr/local/sbin
 cat <<EOF > ${WDHWC}
 #!/bin/bash
 cd ${INSTALLDIR}
-python -m wdhwdaemon.client \$@
+python -m wdhwdaemon.client "\$@"
 EOF
 chmod +x ${WDHWC}
 

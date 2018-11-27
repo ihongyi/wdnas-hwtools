@@ -2,9 +2,9 @@
 
 ################################################################################
 ## 
-## System up notification
+## Button pressed notification
 ## 
-## Copyright (c) 2017 Michael Roland <mi.roland@gmail.com>
+## Copyright (c) 2018 Stefaan Ghysels <stefaang@gmail.com>
 ## 
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,5 +20,25 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## 
 ################################################################################
+
+
+USB_PRESSED=/tmp/usb_button_pressed
+if [ ! -e ${USB_PRESSED} ]; then
+	touch ${USB_PRESSED}
+	wdhwc lcd -t "USB button pressed"
+else
+	lastModified=$(date +%s -r ${USB_PRESSED})
+	now=$(date +%s)
+	duration=$(( $now - $lastModified ))
+	wdhwc lcd -t "USB button released\nafter $duration seconds"
+	rm ${USB_PRESSED}
+fi
+
+
+# e.g. backup data from USB
+# rsync -a /mnt/usb/data /mnt/volume/data
+
+# or upload to the cloud
+# cadaver cp /mnt/usb/data somecloud.com
 
 
