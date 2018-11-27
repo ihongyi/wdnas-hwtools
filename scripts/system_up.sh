@@ -23,8 +23,7 @@
 
 # show IP address to LCD
 IPADDRESS=$(ip route get 1 | awk '{print $NF;exit}')
-cd /usr/local/lib/wdhwd
-python3 -m wdhwdaemon.client lcd -t "PR4100 ready\nIP:${IPADDRESS}"
+wdhwc lcd -t "PR4100 ready\nIP:${IPADDRESS}"
 
 # send mail
 

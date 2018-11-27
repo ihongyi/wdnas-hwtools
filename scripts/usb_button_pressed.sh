@@ -21,20 +21,16 @@
 ## 
 ################################################################################
 
-# set a message on LCD
-function show {
-	cd /usr/local/lib/wdhwd
-	python3 -m wdhwdaemon.client lcd -t "$1"
-}
 
 USB_PRESSED=/tmp/usb_button_pressed
 if [ ! -e ${USB_PRESSED} ]; then
 	touch ${USB_PRESSED}
-	show "USB button pressed"
+	wdhwc lcd -t "USB button pressed"
 else
 	lastModified=$(date +%s -r ${USB_PRESSED})
 	now=$(date +%s)
-	show "USB button released\nafter $(( $now - $lastModified )) seconds"
+	duration=$(( $now - $lastModified ))
+	wdhwc lcd -t "USB button released\nafter $duration seconds"
 	rm ${USB_PRESSED}
 fi
 

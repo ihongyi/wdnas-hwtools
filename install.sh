@@ -61,7 +61,7 @@ echo "Create client binary"
 cat <<EOF > ${WDHWC}
 #!/bin/bash
 cd ${INSTALLDIR}
-python3 -m wdhwdaemon.client \$@
+python3 -m wdhwdaemon.client "\$@"
 EOF
 chmod +x ${WDHWC}
 

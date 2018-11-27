@@ -32,18 +32,15 @@ function get_disk_usage {
 }
 
 function get_temperature {
-	cd /usr/local/lib/wdhwd
-	python3 -m wdhwdaemon.client temperature | sed 's#: #\\n           #'
+	wdhwc temperature | sed 's#: #\\n           #'
 }
 
 function get_fan_speed {
-	cd /usr/local/lib/wdhwd
-	python3 -m wdhwdaemon.client fan | sed 's#: #\\n#'
+	wdhwc fan | sed 's#: #\\n#'
 }
 
 function show {
-	cd /usr/local/lib/wdhwd
-	python3 -m wdhwdaemon.client lcd -t "$1"
+	wdhwc lcd -t "$1"
 }
 
 # button press event triggers both on press as on release
