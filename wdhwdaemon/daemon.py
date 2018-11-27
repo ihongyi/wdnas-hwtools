@@ -478,7 +478,7 @@ class WdHwDaemon(object):
                      type(self).__name__,
                      bay_number, drive_name, "present" if present else "absent")
         if self.__cfg.drive_presence_changed_command is not None:
-            cmd = shlex.split(self.__cfg.drive_presence_changed_command]
+            cmd = shlex.split(self.__cfg.drive_presence_changed_command)
             for arg in self.__cfg.drive_presence_changed_args:
                 cmd.append(arg.format(drive_bay=str(bay_number),
                                       drive_name=drive_name,
